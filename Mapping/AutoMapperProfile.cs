@@ -16,7 +16,9 @@ namespace ScheduleGym.Mapping
     {
         public AutoMapperProfile() {
 
-            CreateMap<PlaceCommand, Place>();
+            CreateMap<PlaceCommand, Place>()
+                .ForSourceMember(x => x.Photos, y => y.DoNotValidate());
+       
 
             CreateMap<Appointments, AppoimnentResponse>();
 

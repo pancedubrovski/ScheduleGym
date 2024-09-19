@@ -28,6 +28,7 @@ namespace ScheduleGym.Models.Database
       public DbSet<Appointments> appointments { get; set; }
       public DbSet<AvalableTerms> avalableTerms { get; set; }
 
+      public DbSet<Photo> photos { get; set; }
       protected override void OnModelCreating(ModelBuilder modelBuilder)
       {
             modelBuilder.Entity<Place>()

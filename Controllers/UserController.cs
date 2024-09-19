@@ -36,7 +36,7 @@ namespace ScheduleGym.Controllers
             
            
             try {
-                var user = await _userRepository.login(loginRequest);
+                var user = await _userRepository.Login(loginRequest);
                 
                 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -60,8 +60,14 @@ namespace ScheduleGym.Controllers
            
 
                 var token =  new JwtSecurityTokenHandler().WriteToken(Sectoken);
+
+                var response = new
+                {
+                    token = token,
+                    user = user
+                };
              
-                return Ok(token);
+                return Ok(response);
             }
             catch(Exception e){
                 return BadRequest(e.Message);
@@ -72,7 +78,7 @@ namespace ScheduleGym.Controllers
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterCommand command){
-            await _userRepository.register(command); 
+            await _userRepository.Register(command); 
             return StatusCode(201);
         }
     }

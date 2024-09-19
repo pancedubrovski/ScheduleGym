@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ScheduleGym.Models.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using AutoMapper;
 
 namespace ScheduleGym.Models
 {
@@ -29,7 +30,11 @@ namespace ScheduleGym.Models
         [JsonIgnore]
         public List<Appointments>? appointments { get; } = new List<Appointments>();
         [JsonIgnore]
-        public ICollection<Review>? reviewes { get; } = new List<Review>(); 
+        public ICollection<Review>? reviewes { get; } = new List<Review>();
+
+        [IgnoreMap]
+        [JsonIgnore]
+        public List<Photo> Photos { get; set; }
 
 
         public Place(){}

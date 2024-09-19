@@ -17,5 +17,7 @@ namespace ScheduleGym.Models.Responses
         public List<AvalableTerms> avalableTerms { get; } = new List<AvalableTerms>();
         public List<Appointments> appointments { get; } = new List<Appointments>();
         public List<Review> reviewes { get; } = new List<Review>();
+
+        public List<Photo> photos { get; } = new List<Photo>();
     }
 }

@@ -7,6 +7,7 @@ using ScheduleGym.Repositories.Interfaces;
 using ScheduleGym.Models.Commands;
 using Microsoft.AspNetCore.Authorization;
 using ScheduleGym.Models.Query;
+using Microsoft.EntityFrameworkCore;
 
 namespace ScheduleGym.Controllers
 {
@@ -23,7 +24,7 @@ namespace ScheduleGym.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> createPlace([FromBody] PlaceCommand command){
+        public async Task<IActionResult> createPlace([FromForm] PlaceCommand command){
             var res = await _placeRepository.savePlace(command);
             
             
@@ -48,6 +49,21 @@ namespace ScheduleGym.Controllers
             return Ok(res);
         }
 
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> deletePlace([FromRoute] int id)
+        {
+            try
+            {
+                var res = await _placeRepository.deletePlace(id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return Ok(200);
+        }
 
     }
     

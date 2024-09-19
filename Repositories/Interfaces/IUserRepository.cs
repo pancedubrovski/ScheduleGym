@@ -9,8 +9,8 @@ namespace ScheduleGym.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        public Task<User> login(LoginRequest request);
+        public Task<User> Login(LoginRequest request);
 
-        public Task<bool> register(RegisterCommand command);
+        public Task<User> Register(RegisterCommand command);
     }
 }

@@ -15,6 +15,9 @@ namespace ScheduleGym.Repositories.Interfaces
         public Task<PaginanationList<PlaceResponse>> getPlaces(GetPlacesQuery query);
 
         public Task<PlaceResponse> getPlaceById(int id);
-        
+
+        public Task<bool> deletePlace(int id);
+
+
     }
 }

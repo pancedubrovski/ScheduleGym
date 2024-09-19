@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using ScheduleGym.Models.Query;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using ScheduleGym.Models.Responses;
+using System.Numerics;
 
 
 namespace ScheduleGym.Repositories
@@ -28,12 +29,15 @@ namespace ScheduleGym.Repositories
         public async Task<Place> savePlace(PlaceCommand command){
            
             Place place =  _mapper.Map<Place>(command);
+            var photos = await savePhotoAsync(command.Photos);
+            place.Photos = photos;
             await _dbContext.places.AddAsync(place);
             await _dbContext.SaveChangesAsync();
             return place;
         }
         public async Task<PaginanationList<PlaceResponse>> getPlaces(GetPlacesQuery query){
             var places = _dbContext.places.AsQueryable();
+
 
             if (!string.IsNullOrEmpty(query.City)){
                 places = places.Where(p => p.City == query.City);
@@ -58,7 +62,10 @@ namespace ScheduleGym.Repositories
 
 
                 places = places.Include(p => p.avalableTerms);
+
             }
+           // places = places.Include(p => p.Photos);
+
             var items = await places.ToListAsync();
             return new PaginanationList<PlaceResponse>
             {
@@ -75,10 +82,23 @@ namespace ScheduleGym.Repositories
         {
            var place = await _dbContext.places
                 .Include(p => p.appointments)
+                .Include(p => p.Photos)
                 .Include(p => p.reviewes).ThenInclude(p => p.user)
                 .FirstOrDefaultAsync(place => place.Id == id);
 
             return _mapper.Map<PlaceResponse>(place);
+        }
+
+        public async Task<bool> deletePlace(int id)
+        {
+            Place place = await _dbContext.places.FirstOrDefaultAsync(place => place.Id == id);
+
+            if(place == null)
+            {
+                throw new Exception("place with id "+id+" doesn't exist");
+            }
+            _dbContext.places.Remove(place);
+            return true;
         }
 
         private bool IsAvilablGym(Appointments appointment, DateTime startTime, DateTime endTime)
@@ -89,5 +109,34 @@ namespace ScheduleGym.Repositories
             }
             return true;
         }
+
+        private async Task<List<Photo>> savePhotoAsync(List<IFormFile> photos)
+        {
+            List<Photo> photolist = new List<Photo>();
+            if (photos.Count > 0)
+            {
+                foreach (var formFile in photos)
+                {
+                    if (formFile.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await formFile.CopyToAsync(memoryStream);
+                           
+                                var newphoto = new Photo()
+                                {
+                                    Bytes = memoryStream.ToArray(),
+                                    Description = formFile.FileName,
+                                    FileExtension = Path.GetExtension(formFile.FileName),
+                                    Size = formFile.Length,
+                                };
+                                photolist.Add(newphoto);
+                        }
+                    }
+                }
+            }
+            return photolist;
+        }
+        
     }
 }

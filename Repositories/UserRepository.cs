@@ -26,7 +26,7 @@ namespace ScheduleGym.Repositories
             _pepper = "papper";
 
         }
-        public async Task<User> login(LoginRequest request){
+        public async Task<User> Login(LoginRequest request){
 
             User user =  await _dbContext.users
             .FirstOrDefaultAsync(u => u.Username == request.Username);
@@ -41,7 +41,7 @@ namespace ScheduleGym.Repositories
             return user;
          }
 
-        public async Task<bool> register(RegisterCommand command){
+        public async Task<User> Register(RegisterCommand command){
 
             User user = _mapper.Map<User>(command);
             user.PasswordSalt = PasswordHasher.GenerateSalt();
@@ -49,7 +49,7 @@ namespace ScheduleGym.Repositories
           
             await _dbContext.users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
-            return true;
+            return user;
         }
         
     }

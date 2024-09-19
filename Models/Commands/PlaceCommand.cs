@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ScheduleGym.Models.Enums;
 using System.Text.Json.Serialization;
 using System.Security.Cryptography.Xml;
+using AutoMapper;
 
 
 
@@ -26,6 +27,9 @@ namespace ScheduleGym.Models.Commands
 
         [JsonPropertyName("ownerId")]
         public string OwnerId { get; set; }
+        [JsonPropertyName("photos")]
+        [IgnoreMap]
+        public List<IFormFile> Photos { get; set; }
 
         [JsonPropertyName("avalable-terms")]
         public List<AvailableTermCommand> AvalableTerms { get; set; } = new List<AvailableTermCommand>();
