@@ -56,15 +56,16 @@ namespace ScheduleGym.Repositories
                 DateTime date = Convert.ToDateTime(query.Date);
                 DateTime startTime = Convert.ToDateTime(query.StartTime);
                 DateTime endTime = Convert.ToDateTime(query.EndTime);
+                
 
                 places = places.Where(p => !p.appointments
-                .Any(a => a.StartTime < endTime || a.EndTime > startTime));
+                .Any(a => a.Date.Date == date.Date && (a.EndTime.TimeOfDay < startTime.TimeOfDay
+                || a.StartTime.TimeOfDay > endTime.TimeOfDay)));
 
 
-                places = places.Include(p => p.avalableTerms);
+                
 
             }
-           // places = places.Include(p => p.Photos);
 
             var items = await places.ToListAsync();
             return new PaginanationList<PlaceResponse>
